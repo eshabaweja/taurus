@@ -1,3 +1,4 @@
+from datetime import datetime
 from pydantic import BaseModel
 
 
@@ -61,4 +62,4 @@ class MemoryEntry(BaseModel):
     sku_id: str
     key: str
     value: str
-    timestamp: int | None = None
+    created_at: datetime | None = None
