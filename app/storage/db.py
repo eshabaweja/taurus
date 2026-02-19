@@ -1,15 +1,15 @@
 import os
-from sqlalchemy.orm.session import Session
 from dotenv import load_dotenv
 from sqlalchemy import DateTime, ForeignKey, Integer, String, Text, create_engine, text
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship, sessionmaker
 from sqlalchemy.sql import func
 from datetime import datetime
+import json
 
 load_dotenv()
 DATABASE_URL = os.getenv('DATABASE_URL')
 engine = create_engine(DATABASE_URL, echo=True)
-Session = sessionmaker(engine)
+SessionLocal = sessionmaker(engine)
 
 class Base(DeclarativeBase):
     pass
@@ -47,7 +47,7 @@ class Artifact(Base):
     run: Mapped["Run"] = relationship(back_populates="artifacts")
 
 
-class Memory_Entry(Base):
+class MemoryEntry(Base):
     __tablename__ = "memory_entries"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
@@ -62,19 +62,103 @@ class Memory_Entry(Base):
 def init_db():
     Base.metadata.create_all(bind=engine)
 
-def get_session()->Session:
-    return Session()
+def get_session():
+    return SessionLocal()
     
 # helper functions
 def create_run(run_id, brand_id, sku_id, status="running"):
-    pass
+
+    session = get_session()
+    try:
+        run = Run(
+            run_id=run_id,
+            brand_id=brand_id,
+            sku_id=sku_id,
+            status=status,
+        )
+        session.add(run)
+        session.commit()
+        session.refresh(run)
+        return run
+    finally:
+        session.close()
+
 def update_run_status(run_id, status):
-    pass
-def insert_artifact(run_id, artifact_type, payload_dict):
-    pass
+    try:
+        session = get_session()
+        run = session.query(Run).filter_by(run_id=run_id).first()
+        if run is None:
+            return
+        run.status = status
+        session.commit()
+    finally:
+        session.close()
+
+def create_artifact(run_id, artifact_type, payload_dict):
+    try:
+        session =  get_session()
+        artifact = Artifact(
+            run_id=run_id,
+            artifact_type=artifact_type,
+            payload = json.dumps(payload_dict)
+        )
+        session.add(artifact)
+        session.commit()
+        session.refresh(artifact)
+        return artifact
+    finally:
+        session.close()
+
 def get_artifacts_by_run_id(run_id):
-    pass
-def write_memory_entry(brand_id, sku_id, key, value):
-    pass
+    session = get_session()
+    try:
+        artifacts = session.query(Artifact).filter_by(run_id=run_id).all()
+        return [
+            {
+                "id": a.id,
+                "run_id": a.run_id,
+                "artifact_type": a.artifact_type,
+                "payload": json.loads(a.payload), 
+                "created_at": a.created_at.isoformat() if a.created_at else None,
+            }
+            for a in artifacts
+        ]
+    finally:
+        session.close()
+
+def create_memory_entry(brand_id, sku_id, key, value):
+    session = get_session()
+    try:
+        memory_entry = MemoryEntry(
+            brand_id=brand_id,
+            sku_id=sku_id,
+            key=key,
+            value=value
+        )
+        session.add(memory_entry)
+        session.commit()
+        session.refresh(memory_entry)
+        return memory_entry
+    finally:
+        session.close()
+        
 def get_memory_entries(brand_id, sku_id, key=None):
-    pass
+    session = get_session()
+    try:
+        query = session.query(MemoryEntry).filter_by(brand_id=brand_id, sku_id=sku_id)
+        if key is not None:
+            query = query.filter_by(key=key)
+        memory_entries = query.all()
+        return [
+            {
+                "id": m.id,
+                "brand_id": m.brand_id,
+                "sku_id": m.sku_id,
+                "key": m.key,
+                "value": m.value,
+                "created_at": m.created_at.isoformat() if m.created_at else None,
+            }
+            for m in memory_entries
+        ]
+    finally:
+        session.close()
