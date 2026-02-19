@@ -1,11 +1,18 @@
+import os
+from sqlalchemy.orm.session import Session
+from dotenv import load_dotenv
 from sqlalchemy import DateTime, ForeignKey, Integer, String, Text, create_engine, text
-from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
+from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship, sessionmaker
 from sqlalchemy.sql import func
 from datetime import datetime
 
+load_dotenv()
+DATABASE_URL = os.getenv('DATABASE_URL')
+engine = create_engine(DATABASE_URL, echo=True)
+Session = sessionmaker(engine)
+
 class Base(DeclarativeBase):
     pass
-
 
 class Run(Base):
     __tablename__ = "runs"
@@ -52,9 +59,22 @@ class Memory_Entry(Base):
         DateTime(timezone=True), nullable=False, server_default=func.now()
     )
 
+def init_db():
+    Base.metadata.create_all(bind=engine)
 
-if __name__ == "__main__":
-    engine = create_engine("sqlite+pysqlite:///:memory:", echo=True)
-    with engine.begin() as conn:
-        result = conn.execute(text("select 'hello world'"))
-        print(result.all())
+def get_session()->Session:
+    return Session()
+    
+# helper functions
+def create_run(run_id, brand_id, sku_id, status="running"):
+    pass
+def update_run_status(run_id, status):
+    pass
+def insert_artifact(run_id, artifact_type, payload_dict):
+    pass
+def get_artifacts_by_run_id(run_id):
+    pass
+def write_memory_entry(brand_id, sku_id, key, value):
+    pass
+def get_memory_entries(brand_id, sku_id, key=None):
+    pass
