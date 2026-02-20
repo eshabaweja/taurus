@@ -63,3 +63,19 @@ class MemoryEntry(BaseModel):
     key: str
     value: str
     created_at: datetime | None = None
+
+# for API requests
+class GenerateRequest(BaseModel):
+    brand_id: str
+    sku_id: str
+    channel: str
+
+
+class GenerateResponse(BaseModel):
+    run_id: str
+    concepts: list[CreativeConcept]
+
+
+class RunResponse(BaseModel):
+    run_id: str
+    artifacts: list[dict]
