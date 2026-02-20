@@ -2,3 +2,4 @@ secrets/
 venv/
 .env
 taurus.db
+__pycache__

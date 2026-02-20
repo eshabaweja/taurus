@@ -10,7 +10,9 @@
     "cta": "Try risk-free",
     "ctr": 2.4,
     "cvr": 5.1,
-    "cpa": 18.5
+    "cpa": 18.5,
+    "notes": "Question hook performed well; consider similar opener for variants.",
+    "brand_id": "aniwell"
   },
   {
     "creative_id": "aniwell-itch-002",
@@ -23,7 +25,9 @@
     "cta": "Shop now",
     "ctr": 3.1,
     "cvr": 6.2,
-    "cpa": 15.2
+    "cpa": 15.2,
+    "notes": "Vet angle resonated. Strong CVR.",
+    "brand_id": "aniwell"
   },
   {
     "creative_id": "aniwell-itch-003",
@@ -36,7 +40,9 @@
     "cta": "Learn more",
     "ctr": 1.8,
     "cvr": 4.0,
-    "cpa": 22.0
+    "cpa": 22.0,
+    "notes": "Meta format; slightly lower CTR than TikTok for this SKU.",
+    "brand_id": "aniwell"
   },
   {
     "creative_id": "aniwell-itch-004",
@@ -49,7 +55,9 @@
     "cta": "Get 20% off",
     "ctr": 4.2,
     "cvr": 7.5,
-    "cpa": 12.8
+    "cpa": 12.8,
+    "notes": "POV/UGC style top performer. Replicate for future concepts.",
+    "brand_id": "aniwell"
   },
   {
     "creative_id": "aniwell-itch-005",
@@ -62,7 +70,9 @@
     "cta": "Try risk-free",
     "ctr": 1.2,
     "cvr": 2.1,
-    "cpa": 38.0
+    "cpa": 38.0,
+    "notes": "Generic headline; CPA high. Avoid for future.",
+    "brand_id": "aniwell"
   },
   {
     "creative_id": "aniwell-itch-006",
@@ -75,7 +85,9 @@
     "cta": "Shop Aniwell",
     "ctr": 2.8,
     "cvr": 5.5,
-    "cpa": 17.0
+    "cpa": 17.0,
+    "notes": "Paw-licking angle specific and memorable.",
+    "brand_id": "aniwell"
   },
   {
     "creative_id": "aniwell-itch-007",
@@ -88,7 +100,9 @@
     "cta": "Order now",
     "ctr": 0.7,
     "cvr": 1.2,
-    "cpa": 52.0
+    "cpa": 52.0,
+    "notes": "Weak performer; headline too generic.",
+    "brand_id": "aniwell"
   },
   {
     "creative_id": "aniwell-itch-008",
@@ -101,7 +115,9 @@
     "cta": "Link in bio",
     "ctr": 3.5,
     "cvr": 6.8,
-    "cpa": 14.0
+    "cpa": 14.0,
+    "notes": "Creator-style hook and link-in-bio CTA worked on TikTok.",
+    "brand_id": "aniwell"
   },
   {
     "creative_id": "aniwell-itch-009",
@@ -114,7 +130,9 @@
     "cta": "Learn more",
     "ctr": 2.0,
     "cvr": 4.5,
-    "cpa": 20.5
+    "cpa": 20.5,
+    "notes": "At-home wellness angle tested well on Meta.",
+    "brand_id": "aniwell"
   },
   {
     "creative_id": "aniwell-itch-010",
@@ -127,7 +145,9 @@
     "cta": "Try it",
     "ctr": 2.1,
     "cvr": 3.0,
-    "cpa": 28.0
+    "cpa": 28.0,
+    "notes": "Avoid 'cured' - compliance risk. Use 'supports' instead.",
+    "brand_id": "aniwell"
   },
   {
     "creative_id": "aniwell-joint-001",
@@ -140,7 +160,9 @@
     "cta": "Support their joints",
     "ctr": 2.6,
     "cvr": 5.0,
-    "cpa": 19.0
+    "cpa": 19.0,
+    "notes": "",
+    "brand_id": "aniwell"
   },
   {
     "creative_id": "aniwell-joint-002",
@@ -148,12 +170,14 @@
     "channel": "meta",
     "hook": "Joint support that dogs actually eat",
     "angle": "Soft chews, real results",
-    "script": "Helps promote joint health and mobility. No pills to hide in food—they love the taste. Supports an active life.",
+    "script": "Helps promote joint health and mobility. No pills to hide in food\u2014they love the taste. Supports an active life.",
     "shot_list": "1. Dog taking chew. 2. Product bag. 3. Dog on hike.",
     "cta": "Shop joint support",
     "ctr": 1.9,
     "cvr": 4.2,
-    "cpa": 23.0
+    "cpa": 23.0,
+    "notes": "",
+    "brand_id": "aniwell"
   },
   {
     "creative_id": "aniwell-joint-003",
@@ -166,7 +190,9 @@
     "cta": "Get 20% off",
     "ctr": 3.8,
     "cvr": 6.5,
-    "cpa": 15.5
+    "cpa": 15.5,
+    "notes": "",
+    "brand_id": "aniwell"
   },
   {
     "creative_id": "aniwell-joint-004",
@@ -179,7 +205,9 @@
     "cta": "Try risk-free",
     "ctr": 1.5,
     "cvr": 3.5,
-    "cpa": 26.0
+    "cpa": 26.0,
+    "notes": "",
+    "brand_id": "aniwell"
   },
   {
     "creative_id": "aniwell-joint-005",
@@ -192,7 +220,9 @@
     "cta": "Shop now",
     "ctr": 2.2,
     "cvr": 4.0,
-    "cpa": 21.0
+    "cpa": 21.0,
+    "notes": "",
+    "brand_id": "aniwell"
   },
   {
     "creative_id": "aniwell-joint-006",
@@ -205,7 +235,9 @@
     "cta": "Learn more",
     "ctr": 0.9,
     "cvr": 1.8,
-    "cpa": 45.0
+    "cpa": 45.0,
+    "notes": "",
+    "brand_id": "aniwell"
   },
   {
     "creative_id": "aniwell-joint-007",
@@ -218,7 +250,9 @@
     "cta": "Try Aniwell",
     "ctr": 3.2,
     "cvr": 5.8,
-    "cpa": 16.5
+    "cpa": 16.5,
+    "notes": "",
+    "brand_id": "aniwell"
   },
   {
     "creative_id": "aniwell-joint-008",
@@ -231,7 +265,9 @@
     "cta": "Order now",
     "ctr": 1.1,
     "cvr": 2.0,
-    "cpa": 42.0
+    "cpa": 42.0,
+    "notes": "",
+    "brand_id": "aniwell"
   },
   {
     "creative_id": "aniwell-calm-001",
@@ -244,7 +280,9 @@
     "cta": "Prepare now",
     "ctr": 2.9,
     "cvr": 5.5,
-    "cpa": 17.5
+    "cpa": 17.5,
+    "notes": "",
+    "brand_id": "aniwell"
   },
   {
     "creative_id": "aniwell-calm-002",
@@ -257,7 +295,9 @@
     "cta": "Shop calming",
     "ctr": 2.0,
     "cvr": 4.5,
-    "cpa": 20.0
+    "cpa": 20.0,
+    "notes": "",
+    "brand_id": "aniwell"
   },
   {
     "creative_id": "aniwell-calm-003",
@@ -265,12 +305,14 @@
     "channel": "tiktok",
     "hook": "This fixed my dog's anxiety",
     "angle": "Game changer for vet visits",
-    "script": "She used to shake the whole car ride. Now she's so much calmer. These chews help support relaxation. Not a sedative—just calm.",
+    "script": "She used to shake the whole car ride. Now she's so much calmer. These chews help support relaxation. Not a sedative\u2014just calm.",
     "shot_list": "1. Dog in car. 2. Chews. 3. Calm dog at vet.",
     "cta": "Try risk-free",
     "ctr": 3.4,
     "cvr": 6.0,
-    "cpa": 15.0
+    "cpa": 15.0,
+    "notes": "",
+    "brand_id": "aniwell"
   },
   {
     "creative_id": "aniwell-calm-004",
@@ -283,7 +325,9 @@
     "cta": "Learn more",
     "ctr": 1.6,
     "cvr": 3.8,
-    "cpa": 24.0
+    "cpa": 24.0,
+    "notes": "",
+    "brand_id": "aniwell"
   },
   {
     "creative_id": "aniwell-calm-005",
@@ -296,7 +340,9 @@
     "cta": "Get 20% off",
     "ctr": 2.7,
     "cvr": 5.2,
-    "cpa": 18.0
+    "cpa": 18.0,
+    "notes": "",
+    "brand_id": "aniwell"
   },
   {
     "creative_id": "aniwell-calm-006",
@@ -309,7 +355,9 @@
     "cta": "Order now",
     "ctr": 0.8,
     "cvr": 1.5,
-    "cpa": 48.0
+    "cpa": 48.0,
+    "notes": "",
+    "brand_id": "aniwell"
   },
   {
     "creative_id": "aniwell-calm-007",
@@ -322,7 +370,9 @@
     "cta": "Link in bio",
     "ctr": 3.0,
     "cvr": 5.8,
-    "cpa": 16.0
+    "cpa": 16.0,
+    "notes": "",
+    "brand_id": "aniwell"
   },
   {
     "creative_id": "aniwell-calm-008",
@@ -335,7 +385,9 @@
     "cta": "Buy now",
     "ctr": 1.0,
     "cvr": 0.9,
-    "cpa": 65.0
+    "cpa": 65.0,
+    "notes": "",
+    "brand_id": "aniwell"
   },
   {
     "creative_id": "aniwell-itch-011",
@@ -348,7 +400,9 @@
     "cta": "Buy",
     "ctr": 0.4,
     "cvr": 0.6,
-    "cpa": 72.0
+    "cpa": 72.0,
+    "notes": "",
+    "brand_id": "aniwell"
   },
   {
     "creative_id": "aniwell-joint-009",
@@ -361,7 +415,9 @@
     "cta": "Order now",
     "ctr": 0.6,
     "cvr": 0.8,
-    "cpa": 58.0
+    "cpa": 58.0,
+    "notes": "",
+    "brand_id": "aniwell"
   },
   {
     "creative_id": "aniwell-itch-012",
@@ -374,7 +430,9 @@
     "cta": "Try risk-free",
     "ctr": 2.3,
     "cvr": 5.0,
-    "cpa": 19.0
+    "cpa": 19.0,
+    "notes": "",
+    "brand_id": "aniwell"
   },
   {
     "creative_id": "aniwell-calm-009",
@@ -382,11 +440,13 @@
     "channel": "tiktok",
     "hook": "Separation anxiety? Start here.",
     "angle": "Support for when you have to leave",
-    "script": "Helps promote calm when you're heading out. We give one before work. Supports a more relaxed mindset—not a fix, but it helps.",
+    "script": "Helps promote calm when you're heading out. We give one before work. Supports a more relaxed mindset\u2014not a fix, but it helps.",
     "shot_list": "1. Owner leaving. 2. Dog with chew. 3. Dog on couch.",
     "cta": "Shop calming",
     "ctr": 2.5,
     "cvr": 4.8,
-    "cpa": 20.0
+    "cpa": 20.0,
+    "notes": "",
+    "brand_id": "aniwell"
   }
 ]
