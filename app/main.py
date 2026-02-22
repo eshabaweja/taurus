@@ -1,9 +1,8 @@
 from contextlib import asynccontextmanager
-from fastapi import FastAPI, HTTPException
-from app.storage.db import init_db, get_artifacts_by_run_id, create_run, update_run_status
-from app.tools import run_tool
-from models import GenerateRequest, GenerateResponse, RunResponse
-import uuid
+from fastapi import FastAPI
+from app.storage.db import init_db, get_artifacts_by_run_id, update_run_status
+from app.agent import run_agent
+from models import GenerateRequest, GenerateResponse, RunResponse, CreativeConcept
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -22,11 +21,9 @@ def read_root():
 
 @app.post("/generate", response_model=GenerateResponse)
 def create_generate(body: GenerateRequest):
-    run_id = str(uuid.uuid4())
-    create_run(run_id, body.brand_id, body.sku_id, status="running")
-    # Stub: return empty concepts. Later: run_agent(body.brand_id, body.sku_id, body.channel)
-    update_run_status(run_id, "completed")
-    return GenerateResponse(run_id=run_id, concepts=[])
+    result = run_agent(body.brand_id, body.sku_id, body.channel)
+    concepts = [CreativeConcept.model_validate(c) for c in result["concepts"]]
+    return GenerateResponse(run_id=result["run_id"], concepts=concepts)
 
 
 @app.get("/runs/{run_id}", response_model=RunResponse)
