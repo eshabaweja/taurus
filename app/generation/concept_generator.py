@@ -1,36 +1,80 @@
+import json
+from app.llm import completion
 
-def generate_concepts(brand_id, sku_id, channel, count=10):
-    """Return `count` creative concepts (stub: hardcoded). Each is a dict matching CreativeConcept."""
-    stub_concepts = [
-        {
-            "creative_id": f"{brand_id}-gen-1",
-            "sku_id": sku_id,
-            "channel": channel,
-            "hook": "Why is your dog scratching? Try this.",
-            "angle": "Relief without the vet bill",
-            "script": "Our soft chews support skin comfort. Real ingredients, no fillers. Worth a try.",
-            "shot_list": "1. Dog scratching. 2. Owner with chews. 3. Happy dog.",
-            "cta": "Try risk-free",
-        },
-        {
-            "creative_id": f"{brand_id}-gen-2",
-            "sku_id": sku_id,
-            "channel": channel,
-            "hook": "Stop the scratch cycle in 2 weeks",
-            "angle": "Vet-style support at home",
-            "script": "These chews help promote healthy skin. No mystery ingredients. Just what your dog needs.",
-            "shot_list": "1. Before/after. 2. Chew close-up. 3. Dog resting.",
-            "cta": "Shop now",
-        },
-        {
-            "creative_id": f"{brand_id}-gen-3",
-            "sku_id": sku_id,
-            "channel": channel,
-            "hook": "POV: You finally found something that works",
-            "angle": "Real results from real ingredients",
-            "script": "After trying everything, these chews actually helped. Supports skin health without the vet visit.",
-            "shot_list": "1. UGC style. 2. Showing chews. 3. Dog relaxed.",
-            "cta": "Get 20% off",
-        },
-    ]
-    return stub_concepts[: max(1, count)]
+# Default when callers do not pass count
+DEFAULT_CONCEPT_COUNT = 10
+
+
+def _generate_concepts_llm(brand_id, sku_id, channel, count, guidelines=None, past=None, memory=None):
+    """Call LLM to generate `count` concepts. Returns list of concept dicts or None on failure."""
+    context_parts = []
+    if guidelines:
+        context_parts.append("Brand guidelines:\n" + json.dumps(guidelines, indent=2))
+    if past:
+        context_parts.append("Past creatives (top examples):\n" + json.dumps(past[:5], indent=2))
+    if memory:
+        context_parts.append("Previous learnings:\n" + json.dumps(memory, indent=2))
+    context = "\n\n".join(context_parts) if context_parts else "No extra context."
+
+    system = """You are a creative strategist for paid social ads. Generate ad concepts as a JSON array.
+Each object must have exactly: "creative_id", "sku_id", "channel", "hook", "angle", "script", "shot_list", "cta".
+- creative_id: unique short id (e.g. "gen-1", "gen-2")
+- hook: attention-grabbing headline (short, curiosity or question)
+- angle: one-line value proposition
+- script: 1-2 sentences, use "supports"/"helps"/"promotes"; never "cure" or "treat disease"
+- shot_list: 2-4 shot descriptions
+- cta: single call-to-action
+Return only the JSON array, no markdown or explanation."""
+
+    user = f"""Brand: {brand_id}, SKU: {sku_id}, Channel: {channel}. Generate exactly {count} concepts.
+
+{context}
+
+Output a JSON array of {count} concept objects with keys: creative_id, sku_id, channel, hook, angle, script, shot_list, cta."""
+
+    text = completion(
+        messages=[{"role": "system", "content": system}, {"role": "user", "content": user}],
+        max_tokens=4096,
+        temperature=0.8,
+    )
+    if not text:
+        return None
+    # Strip markdown code block if present
+    text = text.strip()
+    if text.startswith("```"):
+        lines = text.split("\n")
+        if lines[0].startswith("```"):
+            lines = lines[1:]
+        if lines and lines[-1].strip() == "```":
+            lines = lines[:-1]
+        text = "\n".join(lines)
+    try:
+        raw = json.loads(text)
+        if not isinstance(raw, list):
+            return None
+        out = []
+        for i, item in enumerate(raw[:count]):
+            if not isinstance(item, dict):
+                continue
+            c = {
+                "creative_id": str(item.get("creative_id", f"{brand_id}-gen-{i+1}")),
+                "sku_id": str(item.get("sku_id", sku_id)),
+                "channel": str(item.get("channel", channel)),
+                "hook": str(item.get("hook", "")) or "Hook",
+                "angle": str(item.get("angle", "")) or "Angle",
+                "script": str(item.get("script", "")) or "Script",
+                "shot_list": str(item.get("shot_list", "")) or "Shot list",
+                "cta": str(item.get("cta", "")) or "CTA",
+            }
+            out.append(c)
+        return out if out else None
+    except (json.JSONDecodeError, TypeError):
+        return None
+
+
+def generate_concepts(brand_id, sku_id, channel, count=None, guidelines=None, past=None, memory=None):
+    """Return concepts from LLM. Returns empty list if OPENAI_API_KEY unset or generation fails."""
+    if count is None:
+        count = DEFAULT_CONCEPT_COUNT
+    concepts = _generate_concepts_llm(brand_id, sku_id, channel, count, guidelines, past, memory)
+    return concepts if concepts else []

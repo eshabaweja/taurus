@@ -1,14 +1,12 @@
 import os
-from dotenv import load_dotenv
 from sqlalchemy import DateTime, ForeignKey, Integer, String, Text, create_engine, text
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship, sessionmaker
 from sqlalchemy.sql import func
 from datetime import datetime
 import json
 
-load_dotenv()
 DATABASE_URL = os.getenv('DATABASE_URL')
-engine = create_engine(DATABASE_URL, echo=True)
+engine = create_engine(DATABASE_URL, echo=False)
 SessionLocal = sessionmaker(engine)
 
 class Base(DeclarativeBase):
