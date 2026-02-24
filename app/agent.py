@@ -1,7 +1,7 @@
 import json
 import os
 import uuid
-from app.storage.db import create_run, update_run_status
+from app.storage.db import create_run, update_run_status, create_top_creatives
 from app.tools import run_tool
 from app.generation.concept_generator import generate_concepts
 from app.evaluation.evaluator import evaluate_concepts, select_top_n, DEFAULT_TOP_N
@@ -38,6 +38,9 @@ def run_agent(brand_id, sku_id, channel):
     top_3 = select_top_n(scored, n=TOP_N)
 
     best_concepts = _improve_and_pick_best(top_3, channel, brand_id, sku_id, guidelines=guidelines)
+
+    winners_scored = evaluate_concepts(best_concepts, channel=channel, guidelines=guidelines)
+    create_top_creatives(run_id, brand_id, sku_id, channel, winners_scored)
     _write_run_memory(brand_id, sku_id, top_3_scored=top_3, best_concepts=best_concepts)
 
     update_run_status(run_id, "completed")
