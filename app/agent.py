@@ -33,33 +33,36 @@ def run_agent(brand_id, sku_id, channel):
     )
     run_tool("log_artifact", run_id=run_id, artifact_type="concepts", payload={"concepts": concepts})
 
-    scored = evaluate_concepts(concepts, channel=channel)
+    scored = evaluate_concepts(concepts, channel=channel, guidelines=guidelines)
     run_tool("log_artifact", run_id=run_id, artifact_type="evaluation", payload={"scored": scored})
     top_3 = select_top_n(scored, n=TOP_N)
 
-    best_concepts = _improve_and_pick_best(top_3, channel, brand_id, sku_id)
+    best_concepts = _improve_and_pick_best(top_3, channel, brand_id, sku_id, guidelines=guidelines)
     _write_run_memory(brand_id, sku_id, top_3_scored=top_3, best_concepts=best_concepts)
 
     update_run_status(run_id, "completed")
     return {"run_id": run_id, "concepts": best_concepts}
 
 
-def _generate_improved_variants(concept, channel, feedback_text, brand_id, sku_id, count=2):
+def _generate_improved_variants(concept, channel, feedback_text, brand_id, sku_id, guidelines=None, count=2):
     """Ask LLM for `count` improved variants of the concept. Returns list of concept dicts or []."""
     hook = concept.get("hook") or ""
     angle = concept.get("angle") or ""
     script = concept.get("script") or ""
     shot_list = concept.get("shot_list") or ""
     cta = concept.get("cta") or ""
+    context = f"Concept:\nHook: {hook}\nAngle: {angle}\nScript: {script}\nShot list: {shot_list}\nCTA: {cta}\n\nFeedback: {feedback_text}\n\nChannel: {channel}."
+    if guidelines:
+        context = f"Brand guidelines (follow do's and don'ts):\n{json.dumps(guidelines, indent=2)}\n\n{context}"
     text = completion(
         messages=[
             {
                 "role": "system",
-                "content": "You are a creative optimizer for paid social ads. Given an ad concept and brief feedback, output exactly 2 improved variants as a JSON array. Each object must have: creative_id, sku_id, channel, hook, angle, script, shot_list, cta. Use 'supports'/'helps'/'promotes'; never 'cure' or 'treat disease'. Reply with only the JSON array, no markdown.",
+                "content": "You are a creative optimizer for paid social ads. Given an ad concept and brief feedback, output exactly 2 improved variants as a JSON array. Each object must have: creative_id, sku_id, channel, hook, angle, script, shot_list, cta. Follow the brand's guidelines from the context when provided. Reply with only the JSON array, no markdown.",
             },
             {
                 "role": "user",
-                "content": f"Concept:\nHook: {hook}\nAngle: {angle}\nScript: {script}\nShot list: {shot_list}\nCTA: {cta}\n\nFeedback: {feedback_text}\n\nChannel: {channel}. Output 2 improved variants as JSON array:",
+                "content": context + "\n\nOutput 2 improved variants as JSON array:",
             },
         ],
         max_tokens=1024,
@@ -99,20 +102,20 @@ def _generate_improved_variants(concept, channel, feedback_text, brand_id, sku_i
         return []
 
 
-def _improve_and_pick_best(top_3_scored, channel, brand_id, sku_id):
+def _improve_and_pick_best(top_3_scored, channel, brand_id, sku_id, guidelines=None):
     """For each top concept: generate 2 improved variants, re-score, return the best per slot."""
     best = []
     for item in top_3_scored:
         concept = item["concept"]
         h = item.get("heuristic_score", 0)
         llm_s = item.get("llm_critic_score", 0)
-        feedback_text = f"Heuristic score {h:.1f}, critic score {llm_s:.1f}. Improve hook strength and compliance."
+        feedback_text = f"Heuristic score {h:.1f}, critic score {llm_s:.1f}. Improve hook strength and compliance with brand guidelines."
         variants = _generate_improved_variants(
-            concept, channel, feedback_text, brand_id, sku_id, count=2
+            concept, channel, feedback_text, brand_id, sku_id, guidelines=guidelines, count=2
         )
         candidates = [concept]
         candidates.extend(variants)
-        scored = evaluate_concepts(candidates, channel=channel)
+        scored = evaluate_concepts(candidates, channel=channel, guidelines=guidelines)
         winner = max(scored, key=lambda x: x["score"])
         best.append(winner["concept"])
     return best
@@ -125,10 +128,10 @@ def _distill_learnings(top_3_scored, best_concepts):
     hooks = [c.get("hook") or "" for c in best_concepts]
     if any("?" in h or "why" in h.lower() or "what" in h.lower() for h in hooks):
         learnings.append("Question-style hooks (e.g. 'Why...', 'What if...') performed well.")
-    # Script compliance: support/help language
+    # Script compliance: refer to context/guidelines
     scripts = [c.get("script") or "" for c in best_concepts]
-    if any("support" in s.lower() or "help" in s.lower() or "promote" in s.lower() for s in scripts):
-        learnings.append("Scripts using 'supports', 'helps', or 'promotes' aligned with guidelines.")
+    if scripts:
+        learnings.append("Scripts aligned with brand guidelines from context.")
     # Scores summary
     if top_3_scored:
         avg = sum(s.get("score", 0) for s in top_3_scored) / len(top_3_scored)

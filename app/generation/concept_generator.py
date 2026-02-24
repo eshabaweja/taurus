@@ -17,11 +17,10 @@ def _generate_concepts_llm(brand_id, sku_id, channel, count, guidelines=None, pa
     context = "\n\n".join(context_parts) if context_parts else "No extra context."
 
     system = """You are a creative strategist for paid social ads. Generate ad concepts as a JSON array.
-Each object must have exactly: "creative_id", "sku_id", "channel", "hook", "angle", "script", "shot_list", "cta".
-- creative_id: unique short id (e.g. "gen-1", "gen-2")
+Each object must have: "hook", "angle", "script", "shot_list", "cta".
 - hook: attention-grabbing headline (short, curiosity or question)
 - angle: one-line value proposition
-- script: 1-2 sentences, use "supports"/"helps"/"promotes"; never "cure" or "treat disease"
+- script: 1-2 sentences; follow the brand's do's and don'ts from the guidelines when provided in context
 - shot_list: 2-4 shot descriptions
 - cta: single call-to-action
 Return only the JSON array, no markdown or explanation."""
@@ -30,7 +29,7 @@ Return only the JSON array, no markdown or explanation."""
 
 {context}
 
-Output a JSON array of {count} concept objects with keys: creative_id, sku_id, channel, hook, angle, script, shot_list, cta."""
+Output a JSON array of {count} concept objects with keys: hook, angle, script, shot_list, cta."""
 
     text = completion(
         messages=[{"role": "system", "content": system}, {"role": "user", "content": user}],
@@ -57,9 +56,9 @@ Output a JSON array of {count} concept objects with keys: creative_id, sku_id, c
             if not isinstance(item, dict):
                 continue
             c = {
-                "creative_id": str(item.get("creative_id", f"{brand_id}-gen-{i+1}")),
-                "sku_id": str(item.get("sku_id", sku_id)),
-                "channel": str(item.get("channel", channel)),
+                "creative_id": f"{brand_id}-gen-{i+1}",
+                "sku_id": sku_id,
+                "channel": channel,
                 "hook": str(item.get("hook", "")) or "Hook",
                 "angle": str(item.get("angle", "")) or "Angle",
                 "script": str(item.get("script", "")) or "Script",
