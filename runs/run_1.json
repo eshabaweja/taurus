@@ -1,0 +1,35 @@
+{
+  "run_id": "b370f3dc-154f-4f5d-8295-bab1d0b01f57",
+  "concepts": [
+    {
+      "creative_id": "tiktok_002",
+      "sku_id": "chew_002",
+      "channel": "tiktok",
+      "hook": "Help your pup find comfort at bedtime!",
+      "angle": "Promote skin wellness for serene slumber",
+      "script": "Our soft chews support skin health, ensuring your dog gets the deep, restful sleep they need.",
+      "shot_list": "['Dog scratching and looking uncomfortable', 'Owner offering a chew with a smile', 'Dog snoozing happily in its bed']",
+      "cta": "Promote their peaceful sleep!"
+    },
+    {
+      "creative_id": "aniwell-gen-8",
+      "sku_id": "itch-relief-soft-chews",
+      "channel": "tiktok",
+      "hook": "Can a chew really help your dog's skin?",
+      "angle": "Real ingredients, real results",
+      "script": "These soft chews help promote healthy skin from within, giving your pup the relief they need.",
+      "shot_list": "['Dog digging at its fur', 'Close-up of the chews', 'Happy dog with shiny fur']",
+      "cta": "See the results!"
+    },
+    {
+      "creative_id": "aniwell-gen-4",
+      "sku_id": "itch-relief-soft-chews",
+      "channel": "tiktok",
+      "hook": "What if your dog's skin could feel better?",
+      "angle": "Natural ingredients for healthier skin",
+      "script": "These chews help support your dog's skin health, making those scratchy days a thing of the past.",
+      "shot_list": "['Dog looking uncomfortable', 'Owner reading the ingredient list', 'Dog happily chewing and wagging its tail']",
+      "cta": "Shop now!"
+    }
+  ]
+}

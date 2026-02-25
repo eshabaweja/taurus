@@ -1,0 +1,35 @@
+{
+  "run_id": "22b85a72-148d-4c8d-a923-d6026ac9ca93",
+  "concepts": [
+    {
+      "creative_id": "aniwell-gen-1",
+      "sku_id": "itch-relief-soft-chews",
+      "channel": "tiktok",
+      "hook": "Ever wonder why your dog scratches so much?",
+      "angle": "Soothing relief for sensitive skin",
+      "script": "Our soft chews help promote comfort and support skin health. No more scratching or licking, just happy pups.",
+      "shot_list": "['Close-up of a dog scratching its ear', 'A happy dog chewing on the soft chews', 'Owner cuddling with the dog, showcasing a calm moment']",
+      "cta": "Shop now for a happier pup!"
+    },
+    {
+      "creative_id": "aniwell-gen-2",
+      "sku_id": "itch-relief-soft-chews",
+      "channel": "tiktok",
+      "hook": "Is your dog itching more than usual?",
+      "angle": "Gentle support for delicate skin",
+      "script": "These chews help support your dog's skin health, giving them relief when they need it most. Safe and effective!",
+      "shot_list": "['Dog looking uncomfortable and scratching', 'Owner giving the dog a soft chew', 'Dog playing happily after taking the chews']",
+      "cta": "Get yours today!"
+    },
+    {
+      "creative_id": "aniwell-gen-3",
+      "sku_id": "itch-relief-soft-chews",
+      "channel": "tiktok",
+      "hook": "Does your dog love to scratch?",
+      "angle": "Soothe their skin with every bite",
+      "script": "Our chews help promote healthy skin and comfort, making sure your furry friend feels their best. Simple ingredients, real results.",
+      "shot_list": "['Dog scratching on a rug', 'Owner feeding the dog the soft chews', 'Dog lounging happily with no scratching']",
+      "cta": "Try them now!"
+    }
+  ]
+}

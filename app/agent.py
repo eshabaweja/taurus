@@ -6,6 +6,7 @@ from app.tools import run_tool
 from app.generation.concept_generator import generate_concepts
 from app.evaluation.evaluator import evaluate_concepts, select_top_n, DEFAULT_TOP_N
 from app.llm import completion
+from app.vector_store import index_top_creatives, query_top_creatives_for_generation
 
 
 CONCEPTS_PER_RUN = int(os.environ.get("CONCEPTS_PER_RUN", "10"))
@@ -23,24 +24,77 @@ def run_agent(brand_id, sku_id, channel):
 
     # Load context for generator
     guidelines = run_tool("get_brand_guidelines", brand_id=brand_id)
-    past = run_tool("search_past_creatives", brand_id=brand_id, sku_id=sku_id, channel=channel, query=PAST_CREATIVES_QUERY_DEFAULT, k=PAST_CREATIVES_K)
+    past = run_tool(
+        "search_past_creatives",
+        brand_id=brand_id,
+        sku_id=sku_id,
+        channel=channel,
+        query=PAST_CREATIVES_QUERY_DEFAULT,
+        k=PAST_CREATIVES_K,
+    )
     memory = run_tool("retrieve_memory", brand_id=brand_id, sku_id=sku_id, key=MEMORY_KEY_LAST_RUN)
 
-    # Generate concepts (LLM uses guidelines, past, memory when available)
+    # Retrieve top-performing concepts from vector memory (if any) to use as extra context
+    top_creatives_context = None
+    try:
+        vec_results = query_top_creatives_for_generation(brand_id, sku_id, channel, k=5)
+        docs = (vec_results.get("documents") or [[]])[0]
+        metas = (vec_results.get("metadatas") or [[]])[0]
+        lines = []
+        for doc, meta in zip(docs, metas):
+            hook = (meta or {}).get("hook") or (doc or "")[:120]
+            angle = (meta or {}).get("angle") or ""
+            score = (meta or {}).get("score")
+            parts = [f"Hook: {hook}"]
+            if angle:
+                parts.append(f"Angle: {angle}")
+            if isinstance(score, (int, float)):
+                parts.append(f"Score: {score:.1f}")
+            lines.append(" | ".join(parts))
+        if lines:
+            top_creatives_context = "\n".join(f"- {line}" for line in lines)
+    except Exception:
+        top_creatives_context = None
+
+    # Generate concepts (LLM uses guidelines, past, memory, and vector top-performers when available)
     concepts = generate_concepts(
         brand_id, sku_id, channel, count=CONCEPTS_PER_RUN,
         guidelines=guidelines, past=past, memory=memory,
+        top_creatives=top_creatives_context,
     )
     run_tool("log_artifact", run_id=run_id, artifact_type="concepts", payload={"concepts": concepts})
 
-    scored = evaluate_concepts(concepts, channel=channel, guidelines=guidelines)
+    scored = evaluate_concepts(concepts, brand_id=brand_id, sku_id=sku_id, channel=channel, guidelines=guidelines,)
     run_tool("log_artifact", run_id=run_id, artifact_type="evaluation", payload={"scored": scored})
     top_3 = select_top_n(scored, n=TOP_N)
 
     best_concepts = _improve_and_pick_best(top_3, channel, brand_id, sku_id, guidelines=guidelines)
 
-    winners_scored = evaluate_concepts(best_concepts, channel=channel, guidelines=guidelines)
+    winners_scored = evaluate_concepts(best_concepts, brand_id=brand_id, sku_id=sku_id, channel=channel,guidelines=guidelines,)
     create_top_creatives(run_id, brand_id, sku_id, channel, winners_scored)
+
+    # Also index winners into the vector store so they can be retrieved by future runs.
+    creatives_for_index = []
+    for rank, item in enumerate(winners_scored, start=1):
+        concept = item.get("concept") or {}
+        creatives_for_index.append(
+            {
+                "run_id": run_id,
+                "brand_id": brand_id,
+                "sku_id": sku_id,
+                "channel": concept.get("channel") or channel,
+                "rank": rank,
+                "score": item.get("score", 0.0),
+                "hook": concept.get("hook") or "",
+                "angle": concept.get("angle") or "",
+                "script": concept.get("script") or "",
+            }
+        )
+    if creatives_for_index:
+        try:
+            index_top_creatives(creatives_for_index)
+        except Exception:
+            pass
     _write_run_memory(brand_id, sku_id, top_3_scored=top_3, best_concepts=best_concepts)
 
     update_run_status(run_id, "completed")
@@ -118,7 +172,7 @@ def _improve_and_pick_best(top_3_scored, channel, brand_id, sku_id, guidelines=N
         )
         candidates = [concept]
         candidates.extend(variants)
-        scored = evaluate_concepts(candidates, channel=channel, guidelines=guidelines)
+        scored = evaluate_concepts(candidates, brand_id=brand_id, sku_id=sku_id,channel=channel,guidelines=guidelines,)
         winner = max(scored, key=lambda x: x["score"])
         best.append(winner["concept"])
     return best

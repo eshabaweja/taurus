@@ -5,7 +5,16 @@ from app.llm import completion
 DEFAULT_CONCEPT_COUNT = 10
 
 
-def _generate_concepts_llm(brand_id, sku_id, channel, count, guidelines=None, past=None, memory=None):
+def _generate_concepts_llm(
+    brand_id,
+    sku_id,
+    channel,
+    count,
+    guidelines=None,
+    past=None,
+    memory=None,
+    top_creatives=None,
+):
     """Call LLM to generate `count` concepts. Returns list of concept dicts or None on failure."""
     context_parts = []
     if guidelines:
@@ -14,6 +23,8 @@ def _generate_concepts_llm(brand_id, sku_id, channel, count, guidelines=None, pa
         context_parts.append("Past creatives (top examples):\n" + json.dumps(past[:5], indent=2))
     if memory:
         context_parts.append("Previous learnings:\n" + json.dumps(memory, indent=2))
+    if top_creatives:
+        context_parts.append("Top-performing past concepts:\n" + str(top_creatives))
     context = "\n\n".join(context_parts) if context_parts else "No extra context."
 
     system = """You are a creative strategist for paid social ads. Generate ad concepts as a JSON array.
@@ -71,9 +82,27 @@ Output a JSON array of {count} concept objects with keys: hook, angle, script, s
         return None
 
 
-def generate_concepts(brand_id, sku_id, channel, count=None, guidelines=None, past=None, memory=None):
+def generate_concepts(
+    brand_id,
+    sku_id,
+    channel,
+    count=None,
+    guidelines=None,
+    past=None,
+    memory=None,
+    top_creatives=None,
+):
     """Return concepts from LLM. Returns empty list if OPENAI_API_KEY unset or generation fails."""
     if count is None:
         count = DEFAULT_CONCEPT_COUNT
-    concepts = _generate_concepts_llm(brand_id, sku_id, channel, count, guidelines, past, memory)
+    concepts = _generate_concepts_llm(
+        brand_id,
+        sku_id,
+        channel,
+        count,
+        guidelines=guidelines,
+        past=past,
+        memory=memory,
+        top_creatives=top_creatives,
+    )
     return concepts if concepts else []

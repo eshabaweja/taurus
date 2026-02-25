@@ -7,7 +7,7 @@ from datetime import datetime
 import json
 
 load_dotenv()
-DATABASE_URL = os.getenv('DATABASE_URL')
+DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./taurus.db")
 engine = create_engine(DATABASE_URL, echo=False)
 SessionLocal = sessionmaker(engine)
 

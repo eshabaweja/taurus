@@ -1,6 +1,6 @@
 import json
 from app.llm import completion
-
+from app.vector_store import compute_novelty_penalty
 # Heuristic values
 
 HEURISTIC_BASE_SCORE = 5.0
@@ -15,15 +15,17 @@ LLM_CRITIC_UNAVAILABLE_MSG = (
 )
 
 
-def _heuristic_score(concept):
-    """Simple heuristic: hook length and question-style only. 0-10 scale. Compliance is left to context/guidelines."""
+def _heuristic_score(concept, brand_id, sku_id, channel):
+    """Simple heuristic: hook length and question-style only. 0-10 scale."""
     hook = (concept.get("hook") or "").strip()
     score = HEURISTIC_BASE_SCORE
     if len(hook) >= HEURISTIC_HOOK_MIN_LEN:
         score += HEURISTIC_BONUS_HOOK_LEN
     if "?" in hook or "why" in hook.lower():
         score += HEURISTIC_BONUS_QUESTION
-    return max(0.0, min(10.0, score))
+    candidate_text = f"{concept.get('hook','')} {concept.get('angle','')} {concept.get('script','')}"
+    score += compute_novelty_penalty(candidate_text, brand_id, sku_id, channel)
+    return max(0.0, min(score, 10.0))
 
 
 def _llm_critic_score(concept, channel=DEFAULT_CHANNEL, guidelines=None):
@@ -61,19 +63,25 @@ def _llm_critic_score(concept, channel=DEFAULT_CHANNEL, guidelines=None):
     raise ValueError("LLM critic returned invalid JSON or missing 'score'. Check API response.")
 
 
-def evaluate_concepts(concepts, channel=DEFAULT_CHANNEL, guidelines=None):
+def evaluate_concepts(concepts, brand_id, sku_id, channel=DEFAULT_CHANNEL, guidelines=None):
     """Return list of {concept, heuristic_score, llm_critic_score, score} per concept."""
     evaluated = []
     for concept in concepts:
-        h = _heuristic_score(concept)
-        llm_critic = _llm_critic_score(concept, channel=concept.get("channel") or channel, guidelines=guidelines)
+        h = _heuristic_score(concept, brand_id, sku_id, channel)
+        llm_critic = _llm_critic_score(
+            concept,
+            channel=concept.get("channel") or channel,
+            guidelines=guidelines,
+        )
         score = (h + llm_critic) / 2.0
-        evaluated.append({
-            "concept": concept,
-            "heuristic_score": h,
-            "llm_critic_score": llm_critic,
-            "score": score,
-        })
+        evaluated.append(
+            {
+                "concept": concept,
+                "heuristic_score": h,
+                "llm_critic_score": llm_critic,
+                "score": score,
+            }
+        )
     return evaluated
 
 

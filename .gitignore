@@ -3,3 +3,4 @@ venv/
 .env
 taurus.db
 __pycache__
+.chromadb
