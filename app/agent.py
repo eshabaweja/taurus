@@ -6,7 +6,7 @@ from app.tools import run_tool
 from app.generation.concept_generator import generate_concepts
 from app.evaluation.evaluator import evaluate_concepts, select_top_n, DEFAULT_TOP_N
 from app.llm import completion
-from app.vector_store import index_top_creatives, query_top_creatives_for_generation
+from app.vector_store import index_top_creatives, query_top_creatives_for_generation, index_memory_learnings, query_memory_learnings
 
 
 CONCEPTS_PER_RUN = int(os.environ.get("CONCEPTS_PER_RUN", "10"))
@@ -56,11 +56,21 @@ def run_agent(brand_id, sku_id, channel):
     except Exception:
         top_creatives_context = None
 
-    # Generate concepts (LLM uses guidelines, past, memory, and vector top-performers when available)
+    # Retrieve distilled learnings from vector memory (if any)
+    vector_learnings_context = None
+    try:
+        vec_learnings = query_memory_learnings(brand_id, sku_id, k=5)
+        if vec_learnings:
+            vector_learnings_context = "\n".join(f"- {s}" for s in vec_learnings)
+    except Exception:
+        vector_learnings_context = None
+
+    # Generate concepts (LLM uses guidelines, past, memory, and vector memory when available)
     concepts = generate_concepts(
         brand_id, sku_id, channel, count=CONCEPTS_PER_RUN,
         guidelines=guidelines, past=past, memory=memory,
         top_creatives=top_creatives_context,
+        vector_learnings=vector_learnings_context,
     )
     run_tool("log_artifact", run_id=run_id, artifact_type="concepts", payload={"concepts": concepts})
 
@@ -205,3 +215,9 @@ def _write_run_memory(brand_id, sku_id, top_3_scored=None, best_concepts=None):
     learnings = _distill_learnings(top_3_scored, best_concepts)
     value = json.dumps(learnings)
     run_tool("write_memory", brand_id=brand_id, sku_id=sku_id, key=MEMORY_KEY_LAST_RUN, value=value)
+
+    # index learnings into vector memory
+    try:
+        index_memory_learnings(brand_id, sku_id, MEMORY_KEY_LAST_RUN, learnings)
+    except Exception:
+        pass

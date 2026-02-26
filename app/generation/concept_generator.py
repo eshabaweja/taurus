@@ -14,6 +14,7 @@ def _generate_concepts_llm(
     past=None,
     memory=None,
     top_creatives=None,
+    vector_learnings=None,
 ):
     """Call LLM to generate `count` concepts. Returns list of concept dicts or None on failure."""
     context_parts = []
@@ -22,9 +23,11 @@ def _generate_concepts_llm(
     if past:
         context_parts.append("Past creatives (top examples):\n" + json.dumps(past[:5], indent=2))
     if memory:
-        context_parts.append("Previous learnings:\n" + json.dumps(memory, indent=2))
+        context_parts.append("Previous learnings (latest run):\n" + json.dumps(memory, indent=2))
     if top_creatives:
         context_parts.append("Top-performing past concepts:\n" + str(top_creatives))
+    if vector_learnings:
+        context_parts.append("Distilled learnings from vector memory:\n" + str(vector_learnings))
     context = "\n\n".join(context_parts) if context_parts else "No extra context."
 
     system = """You are a creative strategist for paid social ads. Generate ad concepts as a JSON array.
@@ -91,6 +94,7 @@ def generate_concepts(
     past=None,
     memory=None,
     top_creatives=None,
+    vector_learnings=None,
 ):
     """Return concepts from LLM. Returns empty list if OPENAI_API_KEY unset or generation fails."""
     if count is None:
@@ -104,5 +108,6 @@ def generate_concepts(
         past=past,
         memory=memory,
         top_creatives=top_creatives,
+        vector_learnings=vector_learnings,
     )
     return concepts if concepts else []
