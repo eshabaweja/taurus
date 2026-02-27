@@ -1,3 +1,5 @@
+from dotenv import load_dotenv
+load_dotenv()
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from app.storage.db import init_db, get_artifacts_by_run_id, update_run_status
@@ -16,7 +18,7 @@ app = FastAPI(lifespan=lifespan)
 
 @app.get("/")
 def read_root():
-    return {"Hello": "World"}
+    return {"status": "ok"}
 
 
 @app.post("/generate", response_model=GenerateResponse)
