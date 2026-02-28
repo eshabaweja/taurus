@@ -11,6 +11,15 @@ Run API: `uvicorn app.main:app --reload`
 
 Optional: `python cli.py generate --brand aniwell --sku itch-relief --channel tiktok --output runs/my_run.json` to **save the response** to a file.
 
+## Stack / platform
+- Language: Python 3.13.3
+- API: fastapi and uvicorn
+- CLI: typer
+- LLM: openai python sdk
+- Storage: sqlalchemy with sqlite by default
+- Vectore memory: chromadb persistent store
+- Tested on macOS
+
 ## Design decisions
 SQLite (default `taurus.db`) stores runs, artifacts, and key-value memory (e.g. last-run learnings). ChromaDB (`.chromadb`) is used for vector search: indexing top creatives per run, indexing distilled memory learnings, and computing a novelty penalty so concepts too similar to past winners get a lower score.
 
