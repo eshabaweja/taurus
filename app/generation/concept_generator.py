@@ -1,4 +1,5 @@
 import json
+import uuid
 from app.llm import completion
 
 # Default when callers do not pass count
@@ -70,7 +71,7 @@ Output a JSON array of {count} concept objects with keys: hook, angle, script, s
             if not isinstance(item, dict):
                 continue
             c = {
-                "creative_id": f"{brand_id}-gen-{i+1}",
+                "creative_id": str(uuid.uuid4()),
                 "sku_id": sku_id,
                 "channel": channel,
                 "hook": str(item.get("hook", "")) or "Hook",

@@ -1,35 +1,35 @@
 {
-  "run_id": "b370f3dc-154f-4f5d-8295-bab1d0b01f57",
+  "run_id": "2016b689-8038-4580-a7fc-bb4cd2d544bf",
   "concepts": [
     {
-      "creative_id": "tiktok_002",
-      "sku_id": "chew_002",
-      "channel": "tiktok",
-      "hook": "Help your pup find comfort at bedtime!",
-      "angle": "Promote skin wellness for serene slumber",
-      "script": "Our soft chews support skin health, ensuring your dog gets the deep, restful sleep they need.",
-      "shot_list": "['Dog scratching and looking uncomfortable', 'Owner offering a chew with a smile', 'Dog snoozing happily in its bed']",
-      "cta": "Promote their peaceful sleep!"
-    },
-    {
-      "creative_id": "aniwell-gen-8",
+      "creative_id": "2782e688-254f-45cf-ac35-0ddf1b1e13a0",
       "sku_id": "itch-relief-soft-chews",
       "channel": "tiktok",
-      "hook": "Can a chew really help your dog's skin?",
-      "angle": "Real ingredients, real results",
-      "script": "These soft chews help promote healthy skin from within, giving your pup the relief they need.",
-      "shot_list": "['Dog digging at its fur', 'Close-up of the chews', 'Happy dog with shiny fur']",
-      "cta": "See the results!"
+      "hook": "Is your dog itching at night?",
+      "angle": "Peaceful nights with healthy skin",
+      "script": "These chews help support skin comfort, ensuring your pup can relax and sleep soundly through the night.",
+      "shot_list": "['Dog scratching at night', 'Owner giving a chew to the dog before bed', 'Dog sleeping peacefully', \"Text overlay: 'Supports restful nights'\"]",
+      "cta": "Make bedtime better!"
     },
     {
-      "creative_id": "aniwell-gen-4",
+      "creative_id": "a108de03-acbd-46f2-982b-53190c09342d",
       "sku_id": "itch-relief-soft-chews",
       "channel": "tiktok",
-      "hook": "What if your dog's skin could feel better?",
-      "angle": "Natural ingredients for healthier skin",
-      "script": "These chews help support your dog's skin health, making those scratchy days a thing of the past.",
-      "shot_list": "['Dog looking uncomfortable', 'Owner reading the ingredient list', 'Dog happily chewing and wagging its tail']",
-      "cta": "Shop now!"
+      "hook": "What if your dog could feel better today?",
+      "angle": "Immediate support for skin comfort",
+      "script": "These soft chews help support your dog's skin, making them feel better right away. Because their comfort is your priority.",
+      "shot_list": "['Dog looking sad and scratching', 'Happy moment after getting the chew', 'Playful scenes with the dog', \"Text overlay: 'Supports skin comfort'\"]",
+      "cta": "Shop now for a happy pup!"
+    },
+    {
+      "creative_id": "4f8dd8d7-a7d2-4f7b-a945-130cf3c58e91",
+      "sku_id": "itch-relief-soft-chews",
+      "channel": "tiktok",
+      "hook": "Why is your dog scratching so much?",
+      "angle": "Gentle support for delicate skin",
+      "script": "If your pup is scratching more than usual, these soft chews support skin health from the inside out. Made with real ingredients for real results.",
+      "shot_list": "['Close-up of a dog scratching its ear', 'Owner giving a soft chew to the dog', 'Smiling dog enjoying the chew', \"Text overlay with 'Supports skin health'\"]",
+      "cta": "Try it today!"
     }
   ]
 }
