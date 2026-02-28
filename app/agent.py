@@ -154,9 +154,9 @@ def _generate_improved_variants(concept, channel, feedback_text, brand_id, sku_i
             if not isinstance(item, dict):
                 continue
             c = {
-                "creative_id": str(item.get("creative_id", f"{brand_id}-imp-{i+1}")),
-                "sku_id": str(item.get("sku_id", sku_id)),
-                "channel": str(item.get("channel", channel)),
+                "creative_id": str(uuid.uuid4()),
+                "sku_id": sku_id,
+                "channel": channel,
                 "hook": str(item.get("hook", "")) or hook,
                 "angle": str(item.get("angle", "")) or angle,
                 "script": str(item.get("script", "")) or script,
